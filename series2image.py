@@ -2,43 +2,23 @@
 #copyright(c) strongnine
 import numpy as np
 import matplotlib.pyplot as plt
-from pyts.image import GASF, GADF
+from matplotlib import image
+from pyts.image import GramianAngularField
 import time
 
-csv_path = 'path_to_your_csv_file'
-x = np.loadtxt(open("filename.csv","rb"),delimiter=",",skiprows=0).T
+data = np.loadtxt('data.csv', delimiter=",").reshape(1, -1)
+_, n_sample = data.shape
 
-im_size = 256
-im_sum = 5000
-save_path = 'path_to_sava_jpg/'
+im_size = 128
+step = 16  # step of slide window
+im_sum = (n_sample - im_size) // step
+save_path = './images/'
 
-for i in range(im_sum):
-    ind = str(i).zfill(8)
-    X = x[0,100*i:100*i+im_size]
-    X = X.reshape(1, -1)
-    
-    gasf = GASF(im_size)
-    X_gasf = gasf.fit_transform(X)
-    # print(X_gasf.shape) # (1, 256, 256)
-    X_gasf[0] = np.dot(X_gasf[0],100)
-    gaf = X_gasf[0].astype('int')
-    # print(gaf.dtype)
-
-    # Show the results for the first time series
-    plt.figure(figsize=(8, 8))
-    plt.imshow(gaf, cmap='rainbow', origin='lower')
-    # plt.title("GASF", fontsize=16)
-    plt.axis('off')
-    plt.gca().xaxis.set_major_locator(plt.NullLocator())
-    plt.gca().yaxis.set_major_locator(plt.NullLocator())
-    plt.savefig('.jpg',bbox_inches='tight',pad_inches = 0)
-    # plt.show()
-    plt.close('all')
-
-    # show the processed/rest per 250 images
-    if not(i%250):
-        print(str(i)+'/'+str(im_sum))
-    
-    del(X_gasf, gaf, X, gasf, ind)
-
-print('done')
+gasf = GramianAngularField(image_size=im_size, method='summation')
+for i in range(17):
+    start_index, end_index = i * step, i * step + im_size
+    sub_series = data[:, start_index:end_index]
+    GAF_gasf = gasf.fit_transform(sub_series)
+    im = GAF_gasf[0]
+    filename = save_path + '%d.png' % i
+    image.imsave(filename, im)

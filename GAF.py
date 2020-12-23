@@ -1,30 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from pyts.image import GASF, GADF
+from pyts.image import GramianAngularField
 
-x = np.loadtxt(open("sinx.csv","rb"),delimiter=",",skiprows=0).T
-# print(type(x),x.shape)
-
-X = x[0:]
-X = X.reshape(1, -1)
-print(type(X),X.shape)
+sin_data = np.loadtxt('sinx.csv', delimiter=",", skiprows=0).reshape(1, -1)
 image_size = 28
-gasf = GASF(image_size)
-X_gasf = gasf.fit_transform(X)
-print(X_gasf.shape)
-print(X_gasf[0,4,2],X_gasf[0,2,4])
-gadf = GADF(image_size)
-X_gadf = gadf.fit_transform(X)
-print(X_gadf[0,1,2],X_gadf[0,2,1])
 
-# Show the results for the first time series
-plt.figure(figsize=(16, 8))
-plt.subplot(121)
-plt.imshow(X_gasf[0], cmap='rainbow', origin='lower')
-plt.title("GASF", fontsize=16)
-plt.subplot(122)
-plt.imshow(X_gadf[0], cmap='rainbow', origin='lower')
-plt.title("GADF", fontsize=16)
-plt.savefig('sinx.jpg')
+gasf = GramianAngularField(image_size=image_size, method='summation')
+sin_gasf = gasf.fit_transform(sin_data)
+gadf = GramianAngularField(image_size=image_size, method='difference')
+sin_gadf = gadf.fit_transform(sin_data)
+images = [sin_gasf[0], sin_gadf[0]]
+titles = ['Summation', 'Difference']
+
+fig, axs = plt.subplots(1, 2, constrained_layout=True)
+for image, title, ax in zip(images, titles, axs):
+    ax.imshow(image)
+    ax.set_title(title)
+fig.suptitle('GramianAngularField', y=0.94, fontsize=16)
+plt.margins(0, 0)
+plt.savefig("GramianAngularField.pdf", pad_inches=0)
 plt.show()
-
