@@ -1,8 +1,10 @@
+#!/usr/bin/python
+#copyright(c) strongnine
 import numpy as np
 import matplotlib.pyplot as plt
 from pyts.approximation import PiecewiseAggregateApproximation
 
-data = np.loadtxt("data.csv", delimiter=',')
+data = np.loadtxt("./data/data.csv", delimiter=',')
 data = data.reshape(1, -1)
 n_sampels, n_timestamps = data.shape
 n_paa = 128

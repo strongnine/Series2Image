@@ -1,18 +1,19 @@
 #!/usr/bin/python
 #copyright(c) strongnine
+# 利用 滑动窗口 将一个长的序列信号生成多个 GAF 图片
+# Using a sliding window to generate GAF images from a long sequence of signals
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import image
 from pyts.image import GramianAngularField
-import time
 
-data = np.loadtxt('data.csv', delimiter=",").reshape(1, -1)
+data = np.loadtxt('./data/data.csv', delimiter=",").reshape(1, -1)
 _, n_sample = data.shape
 
-im_size = 128
-step = 16  # step of slide window
-im_sum = (n_sample - im_size) // step
-save_path = './images/'
+im_size = 128  # 生成的 GAF 图片的大小 (the size of each GAF image)
+step = 16  # 滑动窗口的步长 (step of slide window)
+im_sum = (n_sample - im_size) // step  # 生成图片的总数 (the total numbers of GAF images)
+save_path = './images/'  # 图片保存的路径 (save path of the GAF images)
 
 gasf = GramianAngularField(image_size=im_size, method='summation')
 for i in range(17):
