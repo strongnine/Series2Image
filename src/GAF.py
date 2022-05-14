@@ -30,3 +30,4 @@ plt.savefig("./GramianAngularField.pdf", pad_inches=0)
 plt.show()
 
 image.imsave("./images/GAF_of_Sin.png", sin_gasf[0])  # 保存图片 (save image)
+np.savetxt("./images/GAF_of_Sin.csv", sin_gasf[0], delimiter=',')  # 保存数据为 csv 文件
